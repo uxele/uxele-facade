@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var psdetch_core_1 = require("psdetch-core");
 var psdetch_tool_hand_1 = require("psdetch-tool-hand");
 var psdetch_tool_inspect_1 = require("psdetch-tool-inspect");
+var psdetch_tool_color_1 = require("psdetch-tool-color");
 var props = {};
 var Session = /** @class */ (function (_super) {
     __extends(Session, _super);
@@ -38,6 +39,7 @@ var Session = /** @class */ (function (_super) {
     Session.prototype.bindTools = function (renderer) {
         this.set("handtool", new psdetch_tool_hand_1.HandTool(renderer));
         this.set("inspectTool", new psdetch_tool_inspect_1.InspectTool(renderer));
+        this.set("colorTool", new psdetch_tool_color_1.ColorTool(renderer));
     };
     return Session;
 }(psdetch_core_1.BasicEvents));

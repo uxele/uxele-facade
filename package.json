@@ -44,6 +44,7 @@
     "psdetch-tool-hand": "git+ssh://git@gitlab.com/psdetch/psdetch-tool-hand.git",
     "psdetch-utils": "git+ssh://git@gitlab.com/psdetch/psdetch-utils.git",
     "psdetch-core": "git+ssh://git@gitlab.com/psdetch/psdetch-core.git",
-    "psdetch-tool-inspect":"git+ssh://git@gitlab.com/psdetch/psdetch-tool-inspect.git"
+    "psdetch-tool-inspect":"git+ssh://git@gitlab.com/psdetch/psdetch-tool-inspect.git",
+    "psdetch-tool-color":"git+ssh://git@gitlab.com/psdetch/psdetch-tool-color.git"
   }
 }
