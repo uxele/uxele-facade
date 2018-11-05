@@ -10,10 +10,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var psdetch_core_1 = require("psdetch-core");
-var psdetch_tool_hand_1 = require("psdetch-tool-hand");
-var psdetch_tool_inspect_1 = require("psdetch-tool-inspect");
-var psdetch_tool_color_1 = require("psdetch-tool-color");
+var build_1 = require("../../psdetch-core/build");
+var psdetch_tool_hand_1 = require("../../psdetch-tool-hand");
+var build_2 = require("../../psdetch-tool-inspect/build");
 var props = {};
 var Session = /** @class */ (function (_super) {
     __extends(Session, _super);
@@ -38,11 +37,11 @@ var Session = /** @class */ (function (_super) {
     };
     Session.prototype.bindTools = function (renderer) {
         this.set("handtool", new psdetch_tool_hand_1.HandTool(renderer));
-        this.set("inspectTool", new psdetch_tool_inspect_1.InspectTool(renderer));
-        this.set("colorTool", new psdetch_tool_color_1.ColorTool(renderer));
+        this.set("inspectTool", new build_2.InspectTool(renderer));
+        // this.set("colorTool",new ColorTool(renderer));
     };
     return Session;
-}(psdetch_core_1.BasicEvents));
+}(build_1.BasicEvents));
 exports.Session = Session;
-exports.session = new Session();
+// export const session = new Session();
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/psdetch-faced/src/Session.js.map

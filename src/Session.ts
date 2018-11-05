@@ -1,8 +1,8 @@
-import { FabricRenderer } from "psdetch-render-fabric";
-import { IProject, IPage, BasicEvents, ILayer } from "psdetch-core";
-import { HandTool } from "psdetch-tool-hand";
-import {InspectTool} from "psdetch-tool-inspect";
-import  { ColorTool } from "psdetch-tool-color";
+import { FabricRenderer } from "../../psdetch-render-fabric";
+import { IProject, IPage, BasicEvents, ILayer } from "../../psdetch-core/build";
+import { HandTool } from "../../psdetch-tool-hand";
+import {InspectTool} from "../../psdetch-tool-inspect/build";
+import  { ColorTool } from "../../psdetch-tool-color/build";
 export interface ISessionProps{
   curPage?:IPage;
   curProject?:IProject;
@@ -46,8 +46,8 @@ export class Session extends BasicEvents<keyof ISessionProps, ISessionProps[keyo
   private bindTools(renderer: FabricRenderer){
     this.set("handtool",new HandTool(renderer));
     this.set("inspectTool",new InspectTool(renderer));
-    this.set("colorTool",new ColorTool(renderer));
+    // this.set("colorTool",new ColorTool(renderer));
   }
 }
 
-export const session = new Session();
+// export const session = new Session();

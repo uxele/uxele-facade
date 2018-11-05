@@ -1,8 +1,8 @@
-import { FabricRenderer } from "psdetch-render-fabric";
-import { IProject, IPage, BasicEvents, ILayer } from "psdetch-core";
-import { HandTool } from "psdetch-tool-hand";
-import { InspectTool } from "psdetch-tool-inspect";
-import { ColorTool } from "psdetch-tool-color";
+import { FabricRenderer } from "../../psdetch-render-fabric";
+import { IProject, IPage, BasicEvents, ILayer } from "../../psdetch-core/build";
+import { HandTool } from "../../psdetch-tool-hand";
+import { InspectTool } from "../../psdetch-tool-inspect/build";
+import { ColorTool } from "../../psdetch-tool-color/build";
 export interface ISessionProps {
     curPage?: IPage;
     curProject?: IProject;
@@ -27,4 +27,3 @@ export declare class Session extends BasicEvents<keyof ISessionProps, ISessionPr
     constructor();
     private bindTools;
 }
-export declare const session: Session;
