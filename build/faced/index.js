@@ -4,4 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./projectOpenLocalFile"));
+__export(require("./layerExport"));
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/psdetch-faced/src/faced/index.js.map

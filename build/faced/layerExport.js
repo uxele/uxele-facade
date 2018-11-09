@@ -35,50 +35,72 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var adapters_1 = require("../adapters");
+var layer_1 = require("psdetch-core/build/layer");
+var psdetch_utils_1 = require("psdetch-utils");
 var psdetch_i18n_1 = require("psdetch-i18n");
-var states_1 = require("../states");
-function projectOpenLocalFile(_f) {
+function canExportImage(layer) {
+    return layer_1.isPixelLayer(layer) || layer_1.isVectorlLayer(layer);
+}
+exports.canExportImage = canExportImage;
+function canExportSvg(layer) {
+    return layer_1.isVectorlLayer(layer);
+}
+exports.canExportSvg = canExportSvg;
+function canExportText(layer) {
+    return layer_1.isTextLayer(layer);
+}
+exports.canExportText = canExportText;
+function getExportType(layer) {
+    return canExportImage(layer) ? "image" : canExportSvg(layer) ? "svg" : "text";
+}
+exports.getExportType = getExportType;
+function exportImageUrl(layer, params) {
     return __awaiter(this, void 0, void 0, function () {
-        var adps, file, _i, adps_1, adp, proj, pgs, e_1;
+        var canvas;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    adps = adapters_1.adapters;
-                    file = {
-                        meta: {
-                            name: _f.name,
-                            mime: _f.type
-                        },
-                        file: _f
-                    };
-                    _i = 0, adps_1 = adps;
-                    _a.label = 1;
+                case 0: return [4 /*yield*/, exportImage(layer, params)];
                 case 1:
-                    if (!(_i < adps_1.length)) return [3 /*break*/, 7];
-                    adp = adps_1[_i];
-                    if (!adp.checkFileMeta(file.meta)) return [3 /*break*/, 6];
-                    _a.label = 2;
-                case 2:
-                    _a.trys.push([2, 5, , 6]);
-                    return [4 /*yield*/, adp.decodeProject(file)];
-                case 3:
-                    proj = _a.sent();
-                    states_1.store.dispatch(states_1.actionProjectLoaded(proj));
-                    return [4 /*yield*/, proj.getPages()];
-                case 4:
-                    pgs = _a.sent();
-                    return [2 /*return*/, proj];
-                case 5:
-                    e_1 = _a.sent();
-                    return [2 /*return*/, Promise.reject(e_1.toString())];
-                case 6:
-                    _i++;
-                    return [3 /*break*/, 1];
-                case 7: return [2 /*return*/, Promise.reject(psdetch_i18n_1.lang("error_openfile_no_adapter", file.meta.name))];
+                    canvas = _a.sent();
+                    return [2 /*return*/, canvas.toDataURL(params.format, params.quality)];
             }
         });
     });
 }
-exports.projectOpenLocalFile = projectOpenLocalFile;
-//# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/psdetch-faced/src/faced/projectOpenLocalFile.js.map
+exports.exportImageUrl = exportImageUrl;
+function exportImage(layer, params) {
+    return __awaiter(this, void 0, void 0, function () {
+        var canvas, svg, canvas;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!layer_1.isPixelLayer(layer)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, layer.getPixelImg()];
+                case 1:
+                    canvas = _a.sent();
+                    if (params.trim) {
+                        canvas = psdetch_utils_1.trimCanvas(canvas);
+                    }
+                    if (params.scale !== 1) {
+                        canvas = psdetch_utils_1.scaleCanvas(canvas, params.scale);
+                    }
+                    return [2 /*return*/, canvas];
+                case 2:
+                    if (!layer_1.isVectorlLayer(layer)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, layer.getSvgString()];
+                case 3:
+                    svg = _a.sent();
+                    return [4 /*yield*/, psdetch_utils_1.svgToCanvas(svg, params.scale)];
+                case 4:
+                    canvas = _a.sent();
+                    if (params.trim) {
+                        canvas = psdetch_utils_1.trimCanvas(canvas);
+                    }
+                    return [2 /*return*/, canvas];
+                case 5: return [2 /*return*/, Promise.reject(psdetch_i18n_1.lang("error_layerExport_exportImage_unsupported_layerType", layer.name, layer.layerType))];
+            }
+        });
+    });
+}
+exports.exportImage = exportImage;
+//# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/psdetch-faced/src/faced/layerExport.js.map

@@ -1,6 +1,6 @@
 import { adapters } from "../adapters";
 import { IFileBlob } from "psdetch-core";
-import { lang } from "../i18n/lang";
+import { lang } from "psdetch-i18n";
 import { store, actionProjectLoaded } from "../states";
 export async function projectOpenLocalFile(_f: File) {
   const adps = adapters;
