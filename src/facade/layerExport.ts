@@ -1,5 +1,5 @@
 import { ILayer } from "uxele-core/build";
-import { isPixelLayer, isVectorlLayer, isTextLayer } from "uxele-core/build/layer";
+import { isPixelLayer, isVectorlLayer, isTextLayer } from "./layer";
 import {trimCanvas, scaleCanvas, CanvasExportFormat, canvasToFile, svgToCanvas} from "uxele-utils";
 import { lang } from "uxele-i18n";
 export function canExportImage(layer:ILayer):boolean{

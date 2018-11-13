@@ -52,10 +52,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var uxele_core_1 = require("uxele-core");
 var facade_1 = require("../../facade");
 var BaseTool_1 = require("../BaseTool");
+var facade = __importStar(require("../../facade"));
 var hoverColor = "rgba(0, 68, 37,1)";
 var choseColor = "rgba(112,0,0,1)";
 var InspectTool = /** @class */ (function (_super) {
@@ -64,7 +71,7 @@ var InspectTool = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.name = "tool_inspect_name";
         _this.slug = "tool_inspect";
-        _this.cls = "fas fa-mouse-pointer";
+        _this.cls = "fas fa-ruler";
         _this.measureLinesGroup = new window.fabric.Group(undefined, {
             originX: "left",
             originY: "top",
@@ -112,7 +119,7 @@ var InspectTool = /** @class */ (function (_super) {
                         curPage = facade_1.store.getState().chosePage.page;
                         if (!(curPage && e)) return [3 /*break*/, 3];
                         coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
-                        _b = (_a = uxele_core_1.layer).bestLayerByCoords;
+                        _b = (_a = facade).bestLayerByCoords;
                         _c = [coords];
                         return [4 /*yield*/, curPage.getLayers()];
                     case 1: return [4 /*yield*/, _b.apply(_a, _c.concat([_d.sent()]))];
@@ -338,6 +345,7 @@ var InspectTool = /** @class */ (function (_super) {
                     if (_this.storeChoseLayer !== _this.firstChoseLayer) {
                         _this.firstChoseLayer = _this.storeChoseLayer.layer;
                         _this.drawFirstChoseLayer();
+                        _this.prepareDrawMeasure();
                     }
                 });
                 return [2 /*return*/];

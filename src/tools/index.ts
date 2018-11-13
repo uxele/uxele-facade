@@ -1,5 +1,5 @@
 import { IRenderer } from "uxele-core";
-import { store } from "facade";
+import { store } from "../facade";
 import { HandTool } from "./hand";
 import { InspectTool } from "./inspect";
 import { BaseTool } from "./BaseTool";
@@ -36,4 +36,4 @@ function init() {
   });
 
 }
-
+init();

@@ -1,13 +1,14 @@
-import { IRendererEvent, ILayer, layer } from "uxele-core";
+import { IRendererEvent, ILayer } from "uxele-core";
 import { store,  actionChoseLayer } from "../../facade";
 import { BaseTool } from "../BaseTool";
+import * as facade from "../../facade";
 export type InspectToolEvents = "onHoverLayer" | "onChoseLayer";
 const hoverColor = "rgba(0, 68, 37,1)";
 const choseColor = "rgba(112,0,0,1)";
 export class InspectTool extends BaseTool{
   public name: string = "tool_inspect_name"
   public slug: string = "tool_inspect"
-  public cls="fas fa-mouse-pointer"
+  public cls="fas fa-ruler"
   private get storeChoseLayer(){
     return store.getState().choseLayer;
   }
@@ -60,7 +61,7 @@ export class InspectTool extends BaseTool{
     const curPage=store.getState().chosePage.page;
     if (curPage && e) {
       const coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
-      const l = await layer.bestLayerByCoords(coords, await curPage.getLayers());
+      const l = await facade.bestLayerByCoords(coords, await curPage.getLayers());
       
       if (this.hoverLayer !== l) {
         this.hoverLayer = l;
@@ -294,6 +295,7 @@ export class InspectTool extends BaseTool{
       if (this.storeChoseLayer!== this.firstChoseLayer){
         this.firstChoseLayer = this.storeChoseLayer.layer;
         this.drawFirstChoseLayer();
+        this.prepareDrawMeasure();
       }
     })
   }
