@@ -40,16 +40,13 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "uxele-core": "git+ssh://git@gitlab.com/uxele/uxele-core.git",
-    "uxele-fileadapter-image": "git+ssh://git@gitlab.com/uxele/uxele-fileadapter-image.git",
-    "uxele-fileadapter-psd": "git+ssh://git@gitlab.com/uxele/uxele-fileadapter-psd.git",
-    "uxele-render-fabric": "git+ssh://git@gitlab.com/uxele/uxele-render-fabric.git",
-    "uxele-tool-color": "git+ssh://git@gitlab.com/uxele/uxele-tool-color.git",
-    "uxele-tool-hand": "git+ssh://git@gitlab.com/uxele/uxele-tool-hand.git",
-    "uxele-tool-inspect": "git+ssh://git@gitlab.com/uxele/uxele-tool-inspect.git",
-    "uxele-utils": "git+ssh://git@gitlab.com/uxele/uxele-utils.git",
-    "uxele-i18n": "git+ssh://git@gitlab.com/uxele/uxele-i18n.git",
     "redux": "^4.0.1",
-    "sprintf-js": "^1.1.1"
+    "sprintf-js": "^1.1.1",
+    "uxele-core": "git+https://github.com/uxele/uxele-core.git",
+    "uxele-fileadapter-image": "git+https://github.com/uxele/uxele-fileadapter-image.git",
+    "uxele-fileadapter-psd": "git+https://github.com/uxele/uxele-fileadapter-psd.git",
+    "uxele-i18n": "git+https://github.com/uxele/uxele-i18n.git",
+    "uxele-render-fabric": "git+https://github.com/uxele/uxele-render-fabric.git",
+    "uxele-utils": "git+https://github.com/uxele/uxele-utils.git"
   }
 }

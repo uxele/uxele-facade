@@ -12,14 +12,6 @@ module.exports = {
         use: 'awesome-typescript-loader',
         exclude: /node_modules/
       },
-      {
-        test: /psd\.min\.js$/,
-        use: "script-loader"
-      },
-      {
-        test: /fabric\.min\.js$/,
-        use: "script-loader"
-      },
       { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
     ]
   },
@@ -31,7 +23,7 @@ module.exports = {
     ],
   },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
   externals: {

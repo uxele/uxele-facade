@@ -17,7 +17,7 @@ module.exports = function (config) {
     files: [
       { pattern: '**/*.spec.ts', watched: false },
       // '**/*.js',
-      { pattern: "testAssets/**/*", included: false, served: true }
+      { pattern: "tools/testAssets/**/*", included: false, served: true }
     ],
 
 
