@@ -7,7 +7,7 @@ import { ColorTool } from "./color";
 export * from "./color";
 export * from "./hand";
 export * from "./inspect";
-
+export * from "./BaseTool";
 export function getTools(){return tools;}
 export function getToolInst(constructor:Function){
   return tools.find((v)=>{

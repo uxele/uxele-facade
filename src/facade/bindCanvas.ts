@@ -7,4 +7,5 @@ export function bindCanvas(canvas:HTMLCanvasElement){
   }
   const renderer = new FabricRenderer(canvas, canvas.width, canvas.height);
   store.dispatch(actionRendererSet(renderer));
+  return renderer;
 }

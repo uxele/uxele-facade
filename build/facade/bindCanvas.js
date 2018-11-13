@@ -9,6 +9,7 @@ function bindCanvas(canvas) {
     }
     var renderer = new uxele_render_fabric_1.FabricRenderer(canvas, canvas.width, canvas.height);
     states_1.store.dispatch(states_1.actionRendererSet(renderer));
+    return renderer;
 }
 exports.bindCanvas = bindCanvas;
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/src/facade/bindCanvas.js.map

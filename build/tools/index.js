@@ -10,6 +10,7 @@ var color_1 = require("./color");
 __export(require("./color"));
 __export(require("./hand"));
 __export(require("./inspect"));
+__export(require("./BaseTool"));
 function getTools() { return tools; }
 exports.getTools = getTools;
 function getToolInst(constructor) {

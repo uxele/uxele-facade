@@ -7,4 +7,6 @@ __export(require("./projectOpenLocalFile"));
 __export(require("./layerExport"));
 __export(require("./adapters"));
 __export(require("./states"));
+__export(require("./bindCanvas"));
+__export(require("./layer"));
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/src/facade/index.js.map
