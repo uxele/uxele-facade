@@ -1,5 +1,5 @@
 import { Action, Reducer } from "redux";
-import { BaseTool } from "uxele-core";
+import { BaseTool } from "../../tools";
 export interface IChoseToolAction extends Action<"chooseTool"> {
   tool?: BaseTool
 }

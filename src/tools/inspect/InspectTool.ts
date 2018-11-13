@@ -1,7 +1,7 @@
 import { IRendererEvent, ILayer } from "uxele-core";
 import { store,  actionChoseLayer } from "../../facade";
 import { BaseTool } from "../BaseTool";
-import * as facade from "../../facade";
+import { bestLayerByCoords } from "uxele-utils/build/layer";
 export type InspectToolEvents = "onHoverLayer" | "onChoseLayer";
 const hoverColor = "rgba(0, 68, 37,1)";
 const choseColor = "rgba(112,0,0,1)";
@@ -61,7 +61,7 @@ export class InspectTool extends BaseTool{
     const curPage=store.getState().chosePage.page;
     if (curPage && e) {
       const coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
-      const l = await facade.bestLayerByCoords(coords, await curPage.getLayers());
+      const l = await bestLayerByCoords(coords, await curPage.getLayers());
       
       if (this.hoverLayer !== l) {
         this.hoverLayer = l;

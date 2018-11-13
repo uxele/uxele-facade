@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var layer_1 = require("./layer");
+var layer_1 = require("uxele-utils/build/layer");
 var uxele_utils_1 = require("uxele-utils");
 var uxele_i18n_1 = require("uxele-i18n");
 function canExportImage(layer) {

@@ -52,17 +52,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var facade_1 = require("../../facade");
 var BaseTool_1 = require("../BaseTool");
-var facade = __importStar(require("../../facade"));
+var layer_1 = require("uxele-utils/build/layer");
 var hoverColor = "rgba(0, 68, 37,1)";
 var choseColor = "rgba(112,0,0,1)";
 var InspectTool = /** @class */ (function (_super) {
@@ -112,25 +105,25 @@ var InspectTool = /** @class */ (function (_super) {
             }
         };
         _this.onMouseMove = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var curPage, coords, l, _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var curPage, coords, l, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         curPage = facade_1.store.getState().chosePage.page;
                         if (!(curPage && e)) return [3 /*break*/, 3];
                         coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
-                        _b = (_a = facade).bestLayerByCoords;
-                        _c = [coords];
+                        _a = layer_1.bestLayerByCoords;
+                        _b = [coords];
                         return [4 /*yield*/, curPage.getLayers()];
-                    case 1: return [4 /*yield*/, _b.apply(_a, _c.concat([_d.sent()]))];
+                    case 1: return [4 /*yield*/, _a.apply(void 0, _b.concat([_c.sent()]))];
                     case 2:
-                        l = _d.sent();
+                        l = _c.sent();
                         if (this.hoverLayer !== l) {
                             this.hoverLayer = l;
                             this.drawHoverLayer();
                             this.prepareDrawMeasure();
                         }
-                        _d.label = 3;
+                        _c.label = 3;
                     case 3: return [2 /*return*/];
                 }
             });
