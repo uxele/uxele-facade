@@ -3,3 +3,5 @@ export * from "./layerExport";
 export * from "./adapters";
 export * from "./states";
 export * from "./bindCanvas";
+export * from "./canvasControl";
+export * from "./exporters";

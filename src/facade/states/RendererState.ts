@@ -1,9 +1,9 @@
 import { Action, Reducer } from "redux";
 import { IRenderer } from "uxele-core";
-export interface IRendererSetAction extends Action<"rendererSet"> {
-  renderer: IRenderer
+export interface IRendererAction extends Action<"rendererSet" > {
+  renderer?: IRenderer;
 }
-export function actionRendererSet(renderer: IRenderer): IRendererSetAction {
+export function actionRendererSet(renderer: IRenderer): IRendererAction {
   return {
     type: "rendererSet",
     renderer
@@ -15,7 +15,7 @@ export interface IRendererState {
 }
 
 export const rendererReducer: Reducer<IRendererState
-  , IRendererSetAction> =
+  , IRendererAction> =
   (state, action) => {
     if (!state) {
       return {
@@ -26,7 +26,7 @@ export const rendererReducer: Reducer<IRendererState
         if (state.renderer === action.renderer) {
           return state;
         }
-        return { renderer: action.renderer};
+        return { ...state, renderer: action.renderer };
     }
     return state;
   }

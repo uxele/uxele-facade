@@ -1,20 +1,20 @@
 import { IRendererEvent, ILayer } from "uxele-core";
-import { store,  actionChoseLayer } from "../../facade";
+import { store, actionChoseLayer } from "../../facade";
 import { BaseTool } from "../BaseTool";
 import { bestLayerByCoords } from "uxele-utils/build/layer";
 export type InspectToolEvents = "onHoverLayer" | "onChoseLayer";
 const hoverColor = "rgba(0, 68, 37,1)";
 const choseColor = "rgba(112,0,0,1)";
-export class InspectTool extends BaseTool{
+export class InspectTool extends BaseTool {
   public name: string = "tool_inspect_name"
   public slug: string = "tool_inspect"
-  public cls="fas fa-ruler"
-  private get storeChoseLayer(){
+  public cls = "fas fa-mouse-pointer"
+  private get storeChoseLayer() {
     return store.getState().choseLayer;
   }
   private hoverLayer?: ILayer;
   private firstChoseLayer?: ILayer;
-  private unsubscribe?:()=>void;
+  private unsubscribe?: () => void;
   private measureLinesGroup: fabric.Group = new window.fabric.Group(undefined, {
     originX: "left",
     originY: "top",
@@ -58,16 +58,23 @@ export class InspectTool extends BaseTool{
   }
   onMouseMove = async (e: IRendererEvent | undefined) => {
     // const curPage = session.get("curPage");
-    const curPage=store.getState().chosePage.page;
+    const curPage = store.getState().chosePage.page;
     if (curPage && e) {
-      const coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
-      const l = await bestLayerByCoords(coords, await curPage.getLayers());
-      
-      if (this.hoverLayer !== l) {
-        this.hoverLayer = l;
+      const coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e), false);
+      if (coords.x < 0 || coords.y < 0) {
+        this.hoverLayer = undefined;
         this.drawHoverLayer();
         this.prepareDrawMeasure();
+      } else {
+        const l = await bestLayerByCoords(coords, await curPage.getLayers());
+
+        if (this.hoverLayer !== l) {
+          this.hoverLayer = l;
+          this.drawHoverLayer();
+          this.prepareDrawMeasure();
+        }
       }
+
 
     }
   }
@@ -269,7 +276,7 @@ export class InspectTool extends BaseTool{
   }
   private drawLayer(layerGroup: LayerLabelGroup, l?: ILayer) {
     if (l) {
-      layerGroup.setLayer(l,this.renderer.zoom());
+      layerGroup.setLayer(l, this.renderer.zoom());
       this.renderer.draw(layerGroup.getGroup());
 
     } else {
@@ -291,8 +298,8 @@ export class InspectTool extends BaseTool{
     // renderer.on("mousedown", this.onMouseDown);
     renderer.on("mousemove", this.onMouseMove);
     renderer.on("click", this.onMouseDown);
-    this.unsubscribe=store.subscribe(()=>{
-      if (this.storeChoseLayer!== this.firstChoseLayer){
+    this.unsubscribe = store.subscribe(() => {
+      if (this.storeChoseLayer !== this.firstChoseLayer) {
         this.firstChoseLayer = this.storeChoseLayer.layer;
         this.drawFirstChoseLayer();
         this.prepareDrawMeasure();
@@ -307,7 +314,7 @@ export class InspectTool extends BaseTool{
     renderer.clearDrawing(this.firstChoseGroup.getGroup());
     renderer.clearDrawing(this.measureLinesGroup);
     store.dispatch(actionChoseLayer());
-    if (this.unsubscribe){
+    if (this.unsubscribe) {
       this.unsubscribe();
     }
   }
@@ -347,37 +354,37 @@ class LayerLabelGroup {
     // this.item.originX="left";
     // this.item.originY="top";
   }
-  private genLabel(targetLayer: ILayer,zoom:number) {
+  private genLabel(targetLayer: ILayer, zoom: number) {
     if (this.label) {
       this.item.remove(this.label);
 
     }
     this.label = new window.fabric.Text("", {
       text: `  ${targetLayer.rect.width} x ${targetLayer.rect.height}    `,
-      left: targetLayer.rect.left*zoom,
-      top: targetLayer.rect.top*zoom,
+      left: targetLayer.rect.left * zoom,
+      top: targetLayer.rect.top * zoom,
       fontFamily: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Helvetica","Arial",sans-serif',
       ...this.labelStyle
     });
     this.item.addWithUpdate(this.label);
   }
-  private genRect(targetLayer: ILayer,zoom:number) {
+  private genRect(targetLayer: ILayer, zoom: number) {
     if (this.rect) {
       this.item.remove(this.rect);
     }
     this.rect = new window.fabric.Rect({
-      left: targetLayer.rect.left*zoom,
-      top: targetLayer.rect.top*zoom,
-      width: targetLayer.rect.width*zoom,
-      height: targetLayer.rect.height*zoom,
+      left: targetLayer.rect.left * zoom,
+      top: targetLayer.rect.top * zoom,
+      width: targetLayer.rect.width * zoom,
+      height: targetLayer.rect.height * zoom,
       objectCaching: false,
       ...this.rectStyle
     });
     this.item.addWithUpdate(this.rect);
   }
-  setLayer(targetLayer: ILayer, zoom:number) {
-    this.genRect(targetLayer,zoom);
-    this.genLabel(targetLayer,zoom);
+  setLayer(targetLayer: ILayer, zoom: number) {
+    this.genRect(targetLayer, zoom);
+    this.genLabel(targetLayer, zoom);
     // this.label.text = `  ${targetLayer.rect.width} x ${targetLayer.rect.height}    `;
     // this.item.width = Math.round(Math.max(targetLayer.rect.width,this.label.width || 0));
     // this.item.height =Math.round(Math.max(targetLayer.rect.height,this.label.height || 0));

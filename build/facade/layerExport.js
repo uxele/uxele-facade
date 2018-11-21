@@ -103,4 +103,43 @@ function exportImage(layer, params) {
     });
 }
 exports.exportImage = exportImage;
+function getExportImageFileName(layer, params) {
+    return layer.name + "@" + params.scale + "X." + params.format.replace("image/", "");
+}
+exports.getExportImageFileName = getExportImageFileName;
+function getExportSvgFileName(layer) {
+    return layer.name + ".svg";
+}
+exports.getExportSvgFileName = getExportSvgFileName;
+function exportImageWithExporter(layer, exporter, params) {
+    return __awaiter(this, void 0, void 0, function () {
+        var canvas, file;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exportImage(layer, params)];
+                case 1:
+                    canvas = _a.sent();
+                    return [4 /*yield*/, uxele_utils_1.canvasToFile(canvas, getExportImageFileName(layer, params), params.format, params.quality)];
+                case 2:
+                    file = _a.sent();
+                    return [2 /*return*/, exporter.exportBlob(file, getExportImageFileName(layer, params))];
+            }
+        });
+    });
+}
+exports.exportImageWithExporter = exportImageWithExporter;
+function exportSvgWithExporter(layer, exporter) {
+    return __awaiter(this, void 0, void 0, function () {
+        var svg;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, layer.getSvgString()];
+                case 1:
+                    svg = _a.sent();
+                    return [2 /*return*/, exporter.exportBlob(new Blob([svg], { type: "image/svg+xml" }), getExportSvgFileName(layer))];
+            }
+        });
+    });
+}
+exports.exportSvgWithExporter = exportSvgWithExporter;
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/src/facade/layerExport.js.map

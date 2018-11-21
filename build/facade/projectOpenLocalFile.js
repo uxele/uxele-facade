@@ -40,7 +40,7 @@ var uxele_i18n_1 = require("uxele-i18n");
 var states_1 = require("./states");
 function projectOpenLocalFile(_f) {
     return __awaiter(this, void 0, void 0, function () {
-        var adps, file, _i, adps_1, adp, proj, pgs, e_1;
+        var adps, file, _i, adps_1, adp, proj, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -55,27 +55,24 @@ function projectOpenLocalFile(_f) {
                     _i = 0, adps_1 = adps;
                     _a.label = 1;
                 case 1:
-                    if (!(_i < adps_1.length)) return [3 /*break*/, 7];
+                    if (!(_i < adps_1.length)) return [3 /*break*/, 6];
                     adp = adps_1[_i];
-                    if (!adp.checkFileMeta(file.meta)) return [3 /*break*/, 6];
+                    if (!adp.checkFileMeta(file.meta)) return [3 /*break*/, 5];
                     _a.label = 2;
                 case 2:
-                    _a.trys.push([2, 5, , 6]);
+                    _a.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, adp.decodeProject(file)];
                 case 3:
                     proj = _a.sent();
                     states_1.store.dispatch(states_1.actionProjectLoaded(proj));
-                    return [4 /*yield*/, proj.getPages()];
-                case 4:
-                    pgs = _a.sent();
                     return [2 /*return*/, proj];
-                case 5:
+                case 4:
                     e_1 = _a.sent();
                     return [2 /*return*/, Promise.reject(e_1.toString())];
-                case 6:
+                case 5:
                     _i++;
                     return [3 /*break*/, 1];
-                case 7: return [2 /*return*/, Promise.reject(uxele_i18n_1.lang("error_openfile_no_adapter", file.meta.name))];
+                case 6: return [2 /*return*/, Promise.reject(uxele_i18n_1.lang("error_openfile_no_adapter", file.meta.name))];
             }
         });
     });

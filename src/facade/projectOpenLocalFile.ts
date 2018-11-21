@@ -16,7 +16,6 @@ export async function projectOpenLocalFile(_f: File) {
       try {
         const proj = await adp.decodeProject(file);
         store.dispatch(actionProjectLoaded(proj));
-        const pgs = await proj.getPages();
         return proj;
       } catch (e) {
         return Promise.reject(e.toString());

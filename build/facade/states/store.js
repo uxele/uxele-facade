@@ -9,6 +9,7 @@ var ColorToolState_1 = require("./ColorToolState");
 var ProjectState_1 = require("./ProjectState");
 var ChoseToolState_1 = require("./ChoseToolState");
 var RendererState_1 = require("./RendererState");
+var CanvasState_1 = require("./CanvasState");
 var rootReducer = redux_1.combineReducers({
     handTool: HandToolState_1.handToolReducer,
     choseLayer: ChoseLayerState_1.choseLayerReducer,
@@ -16,7 +17,8 @@ var rootReducer = redux_1.combineReducers({
     project: ProjectState_1.projectReducer,
     colorTool: ColorToolState_1.colorToolReducer,
     choseTool: ChoseToolState_1.chooseToolReducer,
-    renderer: RendererState_1.rendererReducer
+    renderer: RendererState_1.rendererReducer,
+    canvasStatus: CanvasState_1.canvasStatusReducer
 });
 exports.store = redux_1.createStore(rootReducer);
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/src/facade/states/store.js.map

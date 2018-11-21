@@ -1,7 +1,7 @@
 import { Action, Reducer } from "redux";
 import { IProject } from "uxele-core";
 export interface IProjectLoadedAction extends Action<"projectLoaded"> {
-    project: IProject;
+    project?: IProject;
 }
 export declare function actionProjectLoaded(project: IProject): IProjectLoadedAction;
 export interface IProjectState {

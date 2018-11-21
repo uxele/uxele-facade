@@ -64,7 +64,7 @@ var InspectTool = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.name = "tool_inspect_name";
         _this.slug = "tool_inspect";
-        _this.cls = "fas fa-ruler";
+        _this.cls = "fas fa-mouse-pointer";
         _this.measureLinesGroup = new window.fabric.Group(undefined, {
             originX: "left",
             originY: "top",
@@ -110,21 +110,27 @@ var InspectTool = /** @class */ (function (_super) {
                 switch (_c.label) {
                     case 0:
                         curPage = facade_1.store.getState().chosePage.page;
-                        if (!(curPage && e)) return [3 /*break*/, 3];
-                        coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
+                        if (!(curPage && e)) return [3 /*break*/, 4];
+                        coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e), false);
+                        if (!(coords.x < 0 || coords.y < 0)) return [3 /*break*/, 1];
+                        this.hoverLayer = undefined;
+                        this.drawHoverLayer();
+                        this.prepareDrawMeasure();
+                        return [3 /*break*/, 4];
+                    case 1:
                         _a = layer_1.bestLayerByCoords;
                         _b = [coords];
                         return [4 /*yield*/, curPage.getLayers()];
-                    case 1: return [4 /*yield*/, _a.apply(void 0, _b.concat([_c.sent()]))];
-                    case 2:
+                    case 2: return [4 /*yield*/, _a.apply(void 0, _b.concat([_c.sent()]))];
+                    case 3:
                         l = _c.sent();
                         if (this.hoverLayer !== l) {
                             this.hoverLayer = l;
                             this.drawHoverLayer();
                             this.prepareDrawMeasure();
                         }
-                        _c.label = 3;
-                    case 3: return [2 /*return*/];
+                        _c.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         }); };

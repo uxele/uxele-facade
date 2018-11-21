@@ -43,6 +43,7 @@
     "redux": "^4.0.1",
     "sprintf-js": "^1.1.1",
     "uxele-core": "git+https://github.com/uxele/uxele-core.git",
+    "uxele-exporter-local": "git+https://github.com/uxele/uxele-exporter-local.git",
     "uxele-fileadapter-image": "git+https://github.com/uxele/uxele-fileadapter-image.git",
     "uxele-fileadapter-psd": "git+https://github.com/uxele/uxele-fileadapter-psd.git",
     "uxele-i18n": "git+https://github.com/uxele/uxele-i18n.git",
