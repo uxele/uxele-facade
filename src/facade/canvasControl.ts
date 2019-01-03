@@ -55,23 +55,22 @@ export function getZoom() {
 }
 
 export function fitToPage() {
-  const page = store.getState().chosePage.page;
-  if (page) {
-    const render = store.getState().renderer.renderer!;
-    const zoom = getPrevScale(Math.round(1 / Math.max(page.width / render.renderWidth, page.height / render.renderHeight, 1) * 100) / 100);
-    centerTo({
-      x: page.width / 2,
-      y: page.height / 2
-    });
+  const render = store.getState().renderer.renderer!;
 
-    // const width = page.width * zoom;
-    // const height = page.height * zoom;
-    // const panX = -(render.renderWidth - width) / 2;
-    // const panY = -(render.renderHeight - height) / 2;
-    // render.panX(panX);
-    // render.panY(panY);
-    setZoom(zoom);
-  }
+  const idealZoom = Math.round(1 / Math.max(render.imgWidth / render.renderWidth, render.imgHeight / render.renderHeight, 1) * 100) / 100;
+  const zoom = zoomScales.indexOf(idealZoom) !== -1 ? idealZoom : getPrevScale(idealZoom);
+  centerTo({
+    x: render.imgWidth / 2,
+    y: render.imgHeight / 2
+  });
+
+  // const width = page.width * zoom;
+  // const height = page.height * zoom;
+  // const panX = -(render.renderWidth - width) / 2;
+  // const panY = -(render.renderHeight - height) / 2;
+  // render.panX(panX);
+  // render.panY(panY);
+  setZoom(zoom);
 }
 
 function getNextScale(level: number) {

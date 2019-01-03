@@ -34,7 +34,12 @@ export const colorToolReducer: Reducer<IStateColorTool, IColorToolAction> =
       case "toolsColorToolHover":
         return { ...state, hoverColor: action.color };
       case "toolsColorToolPick":
-        return { ...state, lastPicked: action.color!, pickedColors: state.pickedColors.concat([action.color!]) };
+        if (state.pickedColors.indexOf(action.color!) === -1) {
+          return { ...state, lastPicked: action.color!, pickedColors: state.pickedColors.concat([action.color!]) };
+        } else {
+          return { ...state, lastPicked: action.color! };
+        }
+
     }
     return state;
   }

@@ -65,66 +65,66 @@ var InspectTool = /** @class */ (function (_super) {
         _this.name = "tool_inspect_name";
         _this.slug = "tool_inspect";
         _this.cls = "fas fa-mouse-pointer";
-        _this.measureLinesGroup = new window.fabric.Group(undefined, {
-            originX: "left",
-            originY: "top",
-            selectable: false,
-            objectCaching: false
-        });
-        _this.hoverLabelGroup = new LayerLabelGroup({
-            // left:0,
-            // top:0,
-            strokeWidth: 1,
-            textBackgroundColor: hoverColor,
-            fontSize: 14,
-            fill: "white",
-        }, {
-            stroke: hoverColor,
-            fill: hoverColor.replace("1)", "0.2)")
-        });
-        _this.firstChoseGroup = new LayerLabelGroup({
-            // left:0,
-            // top:0,
-            strokeWidth: 1,
-            textBackgroundColor: choseColor,
-            fontSize: 14,
-            fill: "white",
-        }, {
-            stroke: choseColor,
-            fill: choseColor.replace("1)", "0.2)")
-        });
+        // private measureLinesGroup: fabric.Group = new window.fabric.Group(undefined, {
+        //   originX: "left",
+        //   originY: "top",
+        //   selectable: false,
+        //   objectCaching: false
+        // })
+        // private hoverLabelGroup: LayerLabelGroup = new LayerLabelGroup({
+        //   // left:0,
+        //   // top:0,
+        //   strokeWidth: 1,
+        //   textBackgroundColor: hoverColor,
+        //   fontSize: 14,
+        //   fill: "white",
+        // }, {
+        //     stroke: hoverColor,
+        //     fill: hoverColor.replace("1)", "0.2)")
+        //   })
+        // private firstChoseGroup: LayerLabelGroup = new LayerLabelGroup({
+        //   // left:0,
+        //   // top:0,
+        //   strokeWidth: 1,
+        //   textBackgroundColor: choseColor,
+        //   fontSize: 14,
+        //   fill: "white",
+        // }, {
+        //     stroke: choseColor,
+        //     fill: choseColor.replace("1)", "0.2)")
+        //   })
         _this.onMouseDown = function (e) {
-            if (_this.hoverLayer) {
-                if (_this.hoverLayer !== _this.firstChoseLayer) {
-                    _this.firstChoseLayer = _this.hoverLayer;
-                    _this.drawFirstChoseLayer();
-                    facade_1.store.dispatch(facade_1.actionChoseLayer(_this.hoverLayer));
-                    // session.set("choseLayer", this.firstChoseLayer);
-                    _this.prepareDrawMeasure();
-                }
+            if (_this.hoverLayer !== _this.firstChoseLayer) {
+                _this.firstChoseLayer = _this.hoverLayer;
+                _this.drawFirstChoseLayer();
+                facade_1.store.dispatch(facade_1.actionChoseLayer(_this.hoverLayer));
+                // session.set("choseLayer", this.firstChoseLayer);
             }
         };
         _this.onMouseMove = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var curPage, coords, l, _a, _b;
+            var realCoords, curPage, pageCoords, l, _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        curPage = facade_1.store.getState().chosePage.page;
-                        if (!(curPage && e)) return [3 /*break*/, 4];
-                        coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e), false);
-                        if (!(coords.x < 0 || coords.y < 0)) return [3 /*break*/, 1];
+                        if (!e) return [3 /*break*/, 4];
+                        realCoords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e), false);
+                        curPage = this.renderer.pageByRealCoords(realCoords);
+                        if (!!curPage) return [3 /*break*/, 1];
+                        this.renderer.clearDrawing(this.hoverLayerGroup);
+                        this.renderer.clearDrawing(this.measureLinesGroup);
                         this.hoverLayer = undefined;
-                        this.drawHoverLayer();
-                        this.prepareDrawMeasure();
                         return [3 /*break*/, 4];
                     case 1:
+                        pageCoords = this.renderer.realPointToPagePoint(realCoords, curPage);
                         _a = layer_1.bestLayerByCoords;
-                        _b = [coords];
+                        _b = [pageCoords];
                         return [4 /*yield*/, curPage.getLayers()];
                     case 2: return [4 /*yield*/, _a.apply(void 0, _b.concat([_c.sent()]))];
                     case 3:
                         l = _c.sent();
                         if (this.hoverLayer !== l) {
+                            this.renderer.clearDrawing(this.hoverLayerGroup);
+                            this.renderer.clearDrawing(this.measureLinesGroup);
                             this.hoverLayer = l;
                             this.drawHoverLayer();
                             this.prepareDrawMeasure();
@@ -144,22 +144,16 @@ var InspectTool = /** @class */ (function (_super) {
         configurable: true
     });
     InspectTool.prototype.prepareDrawMeasure = function () {
-        var _a;
-        this.renderer.clearDrawing(this.measureLinesGroup);
-        if (this.firstChoseLayer && this.firstChoseLayer !== this.hoverLayer) {
-            (_a = this.measureLinesGroup).remove.apply(_a, this.measureLinesGroup.getObjects());
-            if (this.hoverLayer) {
-                this.drawMeasurement(this.firstChoseLayer, this.hoverLayer);
-                this.renderer.draw(this.measureLinesGroup);
-            }
-            else {
-                this.renderer.clearDrawing(this.measureLinesGroup);
-            }
+        if (this.firstChoseLayer && this.hoverLayer &&
+            this.firstChoseLayer !== this.hoverLayer &&
+            this.firstChoseLayer.page === this.hoverLayer.page) {
+            // this.measureLinesGroup.remove(...this.measureLinesGroup.getObjects());
+            this.drawMeasurement(this.firstChoseLayer, this.hoverLayer);
         }
     };
     InspectTool.prototype.drawMeasurement = function (l1, l2) {
-        var rect1 = l1.rect.zoom(this.renderer.zoom());
-        var rect2 = l2.rect.zoom(this.renderer.zoom());
+        var rect1 = l1.rect.panTo(this.renderer.pagePointToRealPoint(l1.rect.leftTop, l1.page)).zoom(this.renderer.zoom());
+        var rect2 = l2.rect.panTo(this.renderer.pagePointToRealPoint(l2.rect.leftTop, l1.page)).zoom(this.renderer.zoom());
         // const coord1 = this.fileRectToCanvasRect(rect1);
         // const coord2 = this.fileRectToCanvasRect(rect2);
         var measure = rect1.distance(rect2);
@@ -187,35 +181,44 @@ var InspectTool = /** @class */ (function (_super) {
             }
         }
     };
-    InspectTool.prototype.drawLineOnFabric = function (points, options) {
+    InspectTool.prototype.drawMeasureLineOnRenderer = function (point1, point2, options) {
         // const def = {
         //   strokeWidth: 1 / this.session.drawer.zoom
         // } as fabric.IObjectOptions;
         // const cfg = assign({}, def, opt);
-        var line = new window.fabric.Line(points, options);
-        this.measureLinesGroup.addWithUpdate(line);
+        this.renderer.draw(__assign({}, options, { x1: point1.x, y1: point1.y, x2: point2.x, y2: point2.y }), this.measureLinesGroup);
     };
-    InspectTool.prototype.drawLabelOnFabric = function (txt, opt) {
-        var def = __assign({ textBackgroundColor: "black", shadow: "2px 2px 10px rgba(0,0,0,0.2)", fill: "white", fontSize: 14, strokeWidth: 1, fontFamily: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Helvetica","Arial",sans-serif' }, opt);
-        var t = new window.fabric.Text("  " + txt + "  ", def);
-        this.measureLinesGroup.addWithUpdate(t);
+    InspectTool.prototype.drawMeasureLabelOnRenderer = function (opt) {
+        // const def: fabric.ITextOptions = {
+        //   textBackgroundColor: "black",
+        //   shadow: "2px 2px 10px rgba(0,0,0,0.2)",
+        //   fill: "white",
+        //   fontSize: 14,
+        //   strokeWidth: 1,
+        //   fontFamily: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Helvetica","Arial",sans-serif',
+        //   ...opt
+        // };
+        // const t = new window.fabric.Text(`  ${txt}  `, def);
+        opt = __assign({}, opt, { textBackgroundFill: "black", fillColor: "white", fontSize: 14, fontWeight: "bold" });
+        this.renderer.draw(opt, this.measureLinesGroup);
+        // this.measureLinesGroup.addWithUpdate(t);
     };
     InspectTool.prototype.drawVLineMeasurements = function (x1, t1, b1, x2, t2, b2, swap, text) {
         var color = "orange";
         var defDashLine = {
-            stroke: color,
-            strokeDashArray: [5, 5],
+            strokeColor: color,
+            strokeDashArray: "5 5",
             strokeWidth: 1
         };
         var defLine = {
-            stroke: color,
+            strokeColor: color,
             strokeWidth: 1
         };
         var t = Math.min(t1, b1, t2, b2);
         var b = Math.max(t1, b1, t2, b2);
         if (x1 === x2) {
             // this.
-            this.drawLineOnFabric([x1, t, x1, b], defDashLine);
+            this.drawMeasureLineOnRenderer({ x: x1, y: t }, { x: x1, y: b }, defDashLine);
             return;
         }
         if (swap) {
@@ -236,10 +239,10 @@ var InspectTool = /** @class */ (function (_super) {
         // b1 = ses.adjustYToCanvas(b1);
         // b2 = ses.adjustYToCanvas(b2);
         if (t1 > b2) {
-            this.drawLineOnFabric([x1, t1, x1, t2], defDashLine);
+            this.drawMeasureLineOnRenderer({ x: x1, y: t1 }, { x: x1, y: t2 }, defDashLine);
         }
         if (b1 < t2) {
-            this.drawLineOnFabric([x1, b1, x1, b2], defDashLine);
+            this.drawMeasureLineOnRenderer({ x: x1, y: b1 }, { x: x1, y: b2 }, defDashLine);
         }
         var rg = getIntersect(t1, b1, t2, b2);
         var ay = 0;
@@ -249,28 +252,29 @@ var InspectTool = /** @class */ (function (_super) {
         else {
             ay = Math.round((t2 + b2) / 2);
         }
-        this.drawLineOnFabric([x1, ay, x2, ay], defLine);
-        this.drawLabelOnFabric(text, {
-            originX: "center",
-            originY: "center",
+        this.drawMeasureLineOnRenderer({ x: x1, y: ay }, { x: x2, y: ay }, defLine);
+        this.drawMeasureLabelOnRenderer({
             left: (x1 + x2) / 2,
-            top: ay
+            top: ay,
+            txt: text
         });
         // draw.drawLable(this.canvas, tx, ty, text, size, "white", "rgba(0,0,0,0.8)");
     };
     InspectTool.prototype.drawHLineMeasurements = function (y1, l1, r1, y2, l2, r2, swap, text) {
         var color = "orange";
         var defDashLine = {
-            stroke: color,
-            strokeDashArray: [5, 5],
+            strokeColor: color,
+            strokeDashArray: "5 5",
+            strokeWidth: 1
         };
         var defLine = {
-            stroke: color,
+            strokeColor: color,
+            strokeWidth: 1
         };
         var l = Math.min(l1, r1, l2, r2);
         var r = Math.max(l1, r1, l2, r2);
         if (y1 === y2) {
-            this.drawLineOnFabric([y1, l, y1, r], defDashLine);
+            this.drawMeasureLineOnRenderer({ x: y1, y: l }, { x: y1, y: r }, defDashLine);
             return;
         }
         if (swap) {
@@ -291,10 +295,10 @@ var InspectTool = /** @class */ (function (_super) {
         // r1 = ses.adjustXToCanvas(r1);
         // r2 = ses.adjustXToCanvas(r2);
         if (l1 > r2) {
-            this.drawLineOnFabric([l1, y1, l2, y1], defDashLine);
+            this.drawMeasureLineOnRenderer({ x: l1, y: y1 }, { x: l2, y: y1 }, defDashLine);
         }
         if (r1 < l2) {
-            this.drawLineOnFabric([r1, y1, r2, y1], defDashLine);
+            this.drawMeasureLineOnRenderer({ x: r1, y: y1 }, { x: r2, y: y1 }, defDashLine);
         }
         var rg = getIntersect(l1, r1, l2, r2);
         var ax = 0;
@@ -304,28 +308,64 @@ var InspectTool = /** @class */ (function (_super) {
         else {
             ax = Math.round((l2 + r2) / 2);
         }
-        this.drawLineOnFabric([ax, y1, ax, y2], defLine);
-        this.drawLabelOnFabric(text, {
-            originX: "center",
-            originY: "center",
+        this.drawMeasureLineOnRenderer({ x: ax, y: y1 }, { x: ax, y: y2 }, defLine);
+        this.drawMeasureLabelOnRenderer({
             left: ax,
-            top: (y1 + y2) / 2
+            top: (y1 + y2) / 2,
+            txt: text
         });
     };
     InspectTool.prototype.drawLayer = function (layerGroup, l) {
         if (l) {
-            layerGroup.setLayer(l, this.renderer.zoom());
-            this.renderer.draw(layerGroup.getGroup());
+            // layerGroup.setLayer(l, this.renderer.zoom());
+            // this.renderer.draw(layerGroup.getGroup());
+            var layer = l.layer, rect = l.rect, txt = l.txt;
+            var page = l.layer.page;
+            var zoom = this.renderer.zoom();
+            var realCoords = this.renderer.pagePointToRealPoint({ x: layer.rect.left, y: layer.rect.top }, page);
+            var labelTxt = "  " + layer.rect.width + " x " + layer.rect.height + "    ";
+            var rectOption = __assign({}, rect, { left: realCoords.x * zoom, top: realCoords.y * zoom, width: layer.rect.width * zoom, height: layer.rect.height * zoom });
+            var txtOption = __assign({}, l.txt, { fontWeight: "bold", left: realCoords.x * zoom, top: realCoords.y * zoom, textBackgroundFill: rect.strokeColor, txt: labelTxt });
+            this.renderer.draw(rectOption, layerGroup);
+            this.renderer.draw(txtOption, layerGroup);
         }
         else {
-            this.renderer.clearDrawing(layerGroup.getGroup());
+            this.renderer.clearDrawing(layerGroup);
         }
     };
     InspectTool.prototype.drawFirstChoseLayer = function () {
-        this.drawLayer(this.firstChoseGroup, this.firstChoseLayer);
+        this.drawLayer(this.choseLayerGroup);
+        if (this.firstChoseLayer) {
+            this.drawLayer(this.choseLayerGroup, {
+                layer: this.firstChoseLayer,
+                rect: {
+                    fillColor: choseColor.replace("1)", "0.2)"),
+                    strokeColor: choseColor,
+                },
+                txt: {
+                    // textBackgroundColor: hoverColor,
+                    fontSize: 14,
+                    fillColor: "white"
+                }
+            });
+        }
     };
     InspectTool.prototype.drawHoverLayer = function () {
-        this.drawLayer(this.hoverLabelGroup, this.hoverLayer);
+        this.drawLayer(this.hoverLayerGroup);
+        if (this.hoverLayer) {
+            this.drawLayer(this.hoverLayerGroup, {
+                layer: this.hoverLayer,
+                rect: {
+                    fillColor: hoverColor.replace("1)", "0.2)"),
+                    strokeColor: hoverColor
+                },
+                txt: {
+                    // textBackgroundColor: hoverColor,
+                    fontSize: 14,
+                    fillColor: "white"
+                }
+            });
+        }
     };
     // onMouseUpAndLeave = (e: IRendererEvent | undefined) => {
     //   this.mouseDown = false;
@@ -340,6 +380,9 @@ var InspectTool = /** @class */ (function (_super) {
                 // renderer.on("mousedown", this.onMouseDown);
                 renderer.on("mousemove", this.onMouseMove);
                 renderer.on("click", this.onMouseDown);
+                this.hoverLayerGroup = renderer.getDrawableGroup();
+                this.choseLayerGroup = renderer.getDrawableGroup();
+                this.measureLinesGroup = renderer.getDrawableGroup();
                 this.unsubscribe = facade_1.store.subscribe(function () {
                     if (_this.storeChoseLayer !== _this.firstChoseLayer) {
                         _this.firstChoseLayer = _this.storeChoseLayer.layer;
@@ -358,9 +401,12 @@ var InspectTool = /** @class */ (function (_super) {
                 renderer = this.renderer;
                 renderer.off("click", this.onMouseDown);
                 renderer.off("mousemove", this.onMouseMove);
-                renderer.clearDrawing(this.hoverLabelGroup.getGroup());
-                renderer.clearDrawing(this.firstChoseGroup.getGroup());
-                renderer.clearDrawing(this.measureLinesGroup);
+                renderer.removeDrawableGroup(this.hoverLayerGroup);
+                renderer.removeDrawableGroup(this.choseLayerGroup);
+                renderer.removeDrawableGroup(this.measureLinesGroup);
+                this.hoverLayerGroup = undefined;
+                this.choseLayerGroup = undefined;
+                this.measureLinesGroup = undefined;
                 facade_1.store.dispatch(facade_1.actionChoseLayer());
                 if (this.unsubscribe) {
                     this.unsubscribe();
@@ -372,70 +418,6 @@ var InspectTool = /** @class */ (function (_super) {
     return InspectTool;
 }(BaseTool_1.BaseTool));
 exports.InspectTool = InspectTool;
-var LayerLabelGroup = /** @class */ (function () {
-    function LayerLabelGroup(labelStyle, rectStyle) {
-        this.labelStyle = labelStyle;
-        this.rectStyle = rectStyle;
-        this.rect = new window.fabric.Rect();
-        this.label = new window.fabric.Text("", __assign({ fontFamily: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Helvetica","Arial",sans-serif', objectCaching: false }, labelStyle));
-        this.label.fontFamily = '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Helvetica","Arial",sans-serif';
-        // this.label.originX = "left";
-        // this.label.originY = "top";
-        // this.label.setPositionByOrigin(new window.fabric.Point(0,0),"left","top");
-        this.rect = new window.fabric.Rect(__assign({ objectCaching: false }, rectStyle));
-        // this.rect.originX = "left";
-        // this.rect.originY = "top";
-        this.item = new window.fabric.Group([this.rect, this.label], {
-            selectable: false,
-        });
-        // this.item.originX="left";
-        // this.item.originY="top";
-    }
-    LayerLabelGroup.prototype.getGroup = function () {
-        return this.item;
-    };
-    LayerLabelGroup.prototype.genLabel = function (targetLayer, zoom) {
-        if (this.label) {
-            this.item.remove(this.label);
-        }
-        this.label = new window.fabric.Text("", __assign({ text: "  " + targetLayer.rect.width + " x " + targetLayer.rect.height + "    ", left: targetLayer.rect.left * zoom, top: targetLayer.rect.top * zoom, fontFamily: '"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue","Helvetica","Arial",sans-serif' }, this.labelStyle));
-        this.item.addWithUpdate(this.label);
-    };
-    LayerLabelGroup.prototype.genRect = function (targetLayer, zoom) {
-        if (this.rect) {
-            this.item.remove(this.rect);
-        }
-        this.rect = new window.fabric.Rect(__assign({ left: targetLayer.rect.left * zoom, top: targetLayer.rect.top * zoom, width: targetLayer.rect.width * zoom, height: targetLayer.rect.height * zoom, objectCaching: false }, this.rectStyle));
-        this.item.addWithUpdate(this.rect);
-    };
-    LayerLabelGroup.prototype.setLayer = function (targetLayer, zoom) {
-        this.genRect(targetLayer, zoom);
-        this.genLabel(targetLayer, zoom);
-        // this.label.text = `  ${targetLayer.rect.width} x ${targetLayer.rect.height}    `;
-        // this.item.width = Math.round(Math.max(targetLayer.rect.width,this.label.width || 0));
-        // this.item.height =Math.round(Math.max(targetLayer.rect.height,this.label.height || 0));
-        // this.rect.left=Math.round(-this.item.width/2);
-        // this.rect.top=Math.round(-this.item.height/2);
-        // this.rect.width=Math.round(targetLayer.rect.width);
-        // this.rect.height=Math.round(targetLayer.rect.height);
-        // // this.rect.setCoords();
-        // this.label.left=this.rect.left;
-        // this.label.top=this.rect.top;
-        // // this.label.setCoords();
-        // this.item.left = targetLayer.rect.left;
-        // this.item.top = targetLayer.rect.top;
-        // console.log("a ", "with",targ);
-        // (this.item as any).addWithUpdate();
-        // console.log("b ", "group", this.item.left,this.item.top,"rect",this.rect.left,this.rect.top,"label",this.label.left,this.label.top);
-        // console.log(this.rect.left,this.rect.top,this.label.left,this.label.top);
-        // this.item.addWithUpdate(this.label);
-        // this.item.setCoords();
-        // this.item.setObjectsCoords();
-        // this.label.setCoords();
-        // this.rect.setCoords();
-    };
-    return LayerLabelGroup;
-}());
 function getIntersect(s1, e1, s2, e2) {
     var maxS = Math.max(s1, s2);
     var minE = Math.min(e1, e2);

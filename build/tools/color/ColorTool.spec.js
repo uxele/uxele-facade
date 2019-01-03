@@ -2,20 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var uxele_core_1 = require("uxele-core");
 function dummyPage() {
-    var layers = [
-        {
-            name: "test layer",
-            rect: new uxele_core_1.Rect(10, 10, 150, 150),
-            layerType: uxele_core_1.LayerType.pixel,
-            visible: true
-        },
-        {
-            name: "test layer 1",
-            rect: new uxele_core_1.Rect(50, 50, 100, 100),
-            layerType: uxele_core_1.LayerType.pixel,
-            visible: true
-        },
-    ];
     var p = {
         name: "dummy page",
         width: 275,
@@ -33,6 +19,22 @@ function dummyPage() {
             return Promise.resolve(layers);
         }
     };
+    var layers = [
+        {
+            name: "test layer",
+            rect: new uxele_core_1.Rect(10, 10, 150, 150),
+            layerType: uxele_core_1.LayerType.pixel,
+            visible: true,
+            page: p
+        },
+        {
+            name: "test layer 1",
+            rect: new uxele_core_1.Rect(50, 50, 100, 100),
+            layerType: uxele_core_1.LayerType.pixel,
+            visible: true,
+            page: p
+        },
+    ];
     return p;
 }
 // describe("InspectTool", () => {

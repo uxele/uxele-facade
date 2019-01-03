@@ -33,7 +33,12 @@ exports.colorToolReducer = function (state, action) {
         case "toolsColorToolHover":
             return __assign({}, state, { hoverColor: action.color });
         case "toolsColorToolPick":
-            return __assign({}, state, { lastPicked: action.color, pickedColors: state.pickedColors.concat([action.color]) });
+            if (state.pickedColors.indexOf(action.color) === -1) {
+                return __assign({}, state, { lastPicked: action.color, pickedColors: state.pickedColors.concat([action.color]) });
+            }
+            else {
+                return __assign({}, state, { lastPicked: action.color });
+            }
     }
     return state;
 };

@@ -1,4 +1,4 @@
-import { IPoint, IRendererEvent } from "uxele-core";
+import { IPoint, IRendererEvent, IPage } from "uxele-core";
 import { BaseTool } from "../BaseTool";
 export declare type ColorToolEvents = "onPickColor" | "onHoverColor";
 export declare class ColorTool extends BaseTool {
@@ -6,11 +6,16 @@ export declare class ColorTool extends BaseTool {
     slug: string;
     cls: string;
     private hoverColor?;
+    private inited;
     private curPageContext?;
-    private colorGroup;
+    private colorGroup?;
     onMouseDown: (e: IRendererEvent | undefined) => void;
     onMouseMove: (e: IRendererEvent | undefined) => Promise<void>;
-    drawColor(r: number, g: number, b: number, coords: IPoint): Promise<void>;
+    colorBand: any;
+    roundEdge: any;
+    magImg: any;
+    magCursor: any;
+    drawColor(r: number, g: number, b: number, coords: IPoint, page: IPage): Promise<void>;
     protected bindRenderer(): Promise<void>;
     protected unbindRenderer(): Promise<void>;
 }

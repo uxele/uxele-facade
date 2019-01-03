@@ -8,17 +8,17 @@
     "test:human": "INTERACTIVE=true karma start",
     "dev": "tsc -w",
     "dep:local": "node script/depLocal.js",
-    "build": "rm -Rf ./build && tsc && cpx ./src/**/*.js ./build"
+    "build": "rm -Rf ./build && tsc && cpx './src/**/*.js' build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/fabric": "^1.5.37",
     "@types/jasmine": "^2.8.8",
     "@types/node": "^10.5.1",
     "@types/react": "^16.4.6",
     "@types/react-dom": "^16.0.6",
     "@types/sprintf-js": "^1.1.1",
+    "@types/toastr": "^2.1.35",
     "awesome-typescript-loader": "^5.2.0",
     "cpx": "^1.5.0",
     "jasmine": "^3.1.0",
@@ -42,12 +42,13 @@
   "dependencies": {
     "redux": "^4.0.1",
     "sprintf-js": "^1.1.1",
+    "toastr": "^2.1.4",
     "uxele-core": "git+https://github.com/uxele/uxele-core.git",
     "uxele-exporter-local": "git+https://github.com/uxele/uxele-exporter-local.git",
     "uxele-fileadapter-image": "git+https://github.com/uxele/uxele-fileadapter-image.git",
     "uxele-fileadapter-psd": "git+https://github.com/uxele/uxele-fileadapter-psd.git",
     "uxele-i18n": "git+https://github.com/uxele/uxele-i18n.git",
-    "uxele-render-fabric": "git+https://github.com/uxele/uxele-render-fabric.git",
+    "uxele-render-svg": "git+https://github.com/uxele/uxele-render-svg.git",
     "uxele-utils": "git+https://github.com/uxele/uxele-utils.git"
   }
 }

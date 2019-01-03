@@ -1,10 +1,20 @@
-export declare const store: import("redux").Store<{
-    handTool: import("./HandToolState").IStateHandTool;
-    choseLayer: import("./ChoseLayerState").IStateChoseLayer;
-    chosePage: import("./ChosePageState").IStateChosePage;
-    project: import("./ProjectState").IProjectState;
-    colorTool: import("./ColorToolState").IStateColorTool;
-    choseTool: import("./ChoseToolState").IStateChoseTool;
-    renderer: import("./RendererState").IRendererState;
-    canvasStatus: import("./CanvasState").IStateCanvasState;
-}, import("redux").AnyAction>;
+import { IStateHandTool } from "./HandToolState";
+import { IStateChoseLayer } from "./ChoseLayerState";
+import { IStateChosePage } from "./ChosePageState";
+import { IStateColorTool } from "./ColorToolState";
+import { IProjectState } from "./ProjectState";
+import { IStateChoseTool } from "./ChoseToolState";
+import { IRendererState } from "./RendererState";
+import { IStateCanvasState } from "./CanvasState";
+import { IGeneralViewState } from "./GeneralView";
+export declare const store: import("../../../../../../../../../../Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/node_modules/redux").Store<{
+    handTool: IStateHandTool;
+    choseLayer: IStateChoseLayer;
+    chosePage: IStateChosePage;
+    project: IProjectState;
+    colorTool: IStateColorTool;
+    choseTool: IStateChoseTool;
+    renderer: IRendererState;
+    canvasStatus: IStateCanvasState;
+    genearlView: IGeneralViewState;
+}, import("../../../../../../../../../../Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/node_modules/redux").AnyAction>;

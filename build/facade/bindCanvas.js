@@ -35,16 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var uxele_render_fabric_1 = require("uxele-render-fabric");
+var uxele_render_svg_1 = require("uxele-render-svg");
 var states_1 = require("./states");
 var CanvasState_1 = require("./states/CanvasState");
 var canvasControl_1 = require("./canvasControl");
 var unsubscribe;
 var curRender;
-var curParent;
-function bindCanvas(canvas, parent) {
+function bindCanvas(parent) {
     return __awaiter(this, void 0, void 0, function () {
-        var curPage, firstPage;
+        var curPage, pages;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -56,10 +55,7 @@ function bindCanvas(canvas, parent) {
                     if (unsubscribe) {
                         unsubscribe();
                     }
-                    canvas.width = parent.clientWidth;
-                    canvas.height = parent.clientHeight;
-                    curRender = new uxele_render_fabric_1.FabricRenderer(canvas, canvas.width, canvas.height);
-                    curParent = parent;
+                    curRender = new uxele_render_svg_1.SvgRenderer(parent);
                     //sub to mouse coords
                     subscribeMouseCoords(curRender);
                     states_1.store.dispatch(states_1.actionRendererSet(curRender));
@@ -70,20 +66,21 @@ function bindCanvas(canvas, parent) {
                             curPage = states_1.store.getState().chosePage.page;
                             if (curPage) {
                                 // render page
-                                curRender.renderPage(curPage)
-                                    .then(function () {
-                                    // zoom canvas to fit page size;
-                                    canvasControl_1.fitToPage();
-                                });
+                                // curRender.renderPage(curPage)
+                                //   .then(() => {
+                                //     // zoom canvas to fit page size;
+                                //     fitToPage();
+                                //   });
                             }
                         }
                     });
                     return [4 /*yield*/, states_1.store.getState().project.project.getPages()];
                 case 1:
-                    firstPage = (_a.sent())[0];
-                    if (firstPage) {
-                        states_1.store.dispatch(states_1.actionChosePage(firstPage));
-                    }
+                    pages = _a.sent();
+                    return [4 /*yield*/, curRender.renderPages(pages)];
+                case 2:
+                    _a.sent();
+                    canvasControl_1.fitToPage();
                     return [2 /*return*/, curRender];
             }
         });
@@ -100,7 +97,7 @@ window.addEventListener("resize", function () {
         resizeTimer = window.setTimeout(function () {
             resizeTimer = null;
             if (curRender) {
-                curRender.resizeRender(curParent.clientWidth, curParent.clientHeight);
+                curRender.resizeRender();
             }
         }, 100);
     }

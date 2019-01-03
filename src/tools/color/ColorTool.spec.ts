@@ -2,20 +2,6 @@ import { IPage, Rect, LayerType } from "uxele-core";
 
 
 function dummyPage() {
-  const layers=[
-    {
-      name: "test layer",
-      rect: new Rect(10,10,150,150),
-      layerType: LayerType.pixel,
-      visible: true
-    },
-    {
-      name: "test layer 1",
-      rect: new Rect(50,50,100,100),
-      layerType: LayerType.pixel,
-      visible: true
-    },
-  ]
   const p: IPage = {
     name: "dummy page",
     width: 275,
@@ -33,6 +19,23 @@ function dummyPage() {
       return Promise.resolve(layers);
     }
   };
+  const layers = [
+    {
+      name: "test layer",
+      rect: new Rect(10, 10, 150, 150),
+      layerType: LayerType.pixel,
+      visible: true,
+      page: p
+    },
+    {
+      name: "test layer 1",
+      rect: new Rect(50, 50, 100, 100),
+      layerType: LayerType.pixel,
+      visible: true,
+      page: p
+    },
+  ]
+
   return p;
 
 }
@@ -65,7 +68,7 @@ function dummyPage() {
 //       testAlert("Please move mouse around the rendered picture.");
 //       await sleep(5000);
 //       expect(testConfirm("Have you seen two layers?")).toBeTruthy();
-    
+
 //     })
 //     it ("should display a layer that is chosen",async ()=>{
 //       session.set("curPage",dummyPage());
@@ -78,5 +81,5 @@ function dummyPage() {
 //       expect(testConfirm("Have you seen clicked layer being highlighted?")).toBeTruthy();
 //     })
 //   }
-  
+
 // })

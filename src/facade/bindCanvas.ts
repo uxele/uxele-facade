@@ -1,12 +1,11 @@
-import { FabricRenderer } from "uxele-render-fabric";
+import { SvgRenderer } from "uxele-render-svg"
 import { store, actionRendererSet, actionChosePage } from "./states";
 import { IPage, IRenderer, IRendererEvent } from "uxele-core/build";
 import { actionCanvasStatusCoords } from "./states/CanvasState";
 import { fitToPage } from "./canvasControl";
 let unsubscribe: Function;
 let curRender: IRenderer;
-let curParent: HTMLElement;
-export async function bindCanvas(canvas: HTMLCanvasElement, parent: HTMLElement) {
+export async function bindCanvas(parent: HTMLElement) {
   // unload previous renderer (if any)
   if (curRender) {
     curRender.destroy();
@@ -15,10 +14,7 @@ export async function bindCanvas(canvas: HTMLCanvasElement, parent: HTMLElement)
   if (unsubscribe) {
     unsubscribe();
   }
-  canvas.width = parent.clientWidth;
-  canvas.height = parent.clientHeight;
-  curRender = new FabricRenderer(canvas, canvas.width, canvas.height);
-  curParent = parent;
+  curRender = new SvgRenderer(parent);
   //sub to mouse coords
   subscribeMouseCoords(curRender);
   store.dispatch(actionRendererSet(curRender));
@@ -29,20 +25,23 @@ export async function bindCanvas(canvas: HTMLCanvasElement, parent: HTMLElement)
       curPage = store.getState().chosePage.page;
       if (curPage) {
         // render page
-        curRender.renderPage(curPage)
-          .then(() => {
-            // zoom canvas to fit page size;
-            fitToPage();
-          });
+        // curRender.renderPage(curPage)
+        //   .then(() => {
+        //     // zoom canvas to fit page size;
+        //     fitToPage();
+        //   });
 
 
       }
     }
   })
-  const firstPage = (await store.getState().project.project!.getPages())[0];
-  if (firstPage) {
-    store.dispatch(actionChosePage(firstPage));
-  }
+  // const firstPage = (await store.getState().project.project!.getPages())[0];
+  // if (firstPage) {
+  //   store.dispatch(actionChosePage(firstPage));
+  // }
+  const pages=await store.getState().project.project!.getPages();
+  await curRender.renderPages(pages);
+  fitToPage();
   return curRender;
 }
 let resizeTimer: number | null = null;
@@ -55,7 +54,7 @@ window.addEventListener("resize", () => {
     resizeTimer = window.setTimeout(() => {
       resizeTimer = null;
       if (curRender) {
-        curRender.resizeRender(curParent.clientWidth, curParent.clientHeight);
+        curRender.resizeRender();
       }
     }, 100);
   }

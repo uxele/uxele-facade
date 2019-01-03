@@ -1,1 +1,1 @@
-export declare function projectOpenLocalFile(_f: File): Promise<any>;
+export declare function projectOpenLocalFile(_f: File): Promise<import("../../../../../../../../../Users/kxiang/work/projects/psdetch/v3-new/uxele-fileadapter-psd/node_modules/uxele-core/build/types").IProject>;

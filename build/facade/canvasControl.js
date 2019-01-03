@@ -60,22 +60,20 @@ function getZoom() {
 }
 exports.getZoom = getZoom;
 function fitToPage() {
-    var page = _1.store.getState().chosePage.page;
-    if (page) {
-        var render = _1.store.getState().renderer.renderer;
-        var zoom = getPrevScale(Math.round(1 / Math.max(page.width / render.renderWidth, page.height / render.renderHeight, 1) * 100) / 100);
-        centerTo({
-            x: page.width / 2,
-            y: page.height / 2
-        });
-        // const width = page.width * zoom;
-        // const height = page.height * zoom;
-        // const panX = -(render.renderWidth - width) / 2;
-        // const panY = -(render.renderHeight - height) / 2;
-        // render.panX(panX);
-        // render.panY(panY);
-        setZoom(zoom);
-    }
+    var render = _1.store.getState().renderer.renderer;
+    var idealZoom = Math.round(1 / Math.max(render.imgWidth / render.renderWidth, render.imgHeight / render.renderHeight, 1) * 100) / 100;
+    var zoom = zoomScales.indexOf(idealZoom) !== -1 ? idealZoom : getPrevScale(idealZoom);
+    centerTo({
+        x: render.imgWidth / 2,
+        y: render.imgHeight / 2
+    });
+    // const width = page.width * zoom;
+    // const height = page.height * zoom;
+    // const panX = -(render.renderWidth - width) / 2;
+    // const panY = -(render.renderHeight - height) / 2;
+    // render.panX(panX);
+    // render.panY(panY);
+    setZoom(zoom);
 }
 exports.fitToPage = fitToPage;
 function getNextScale(level) {

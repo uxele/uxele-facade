@@ -65,6 +65,8 @@ var HandTool = /** @class */ (function (_super) {
                     y: evt.clientY
                 };
                 facade_1.store.dispatch(facade_1.actionHandToolPanStart());
+                evt.stopPropagation();
+                evt.preventDefault();
                 // this.emit("onPanStart");
             }
         };
@@ -78,12 +80,19 @@ var HandTool = /** @class */ (function (_super) {
                     renderer.panY(renderer.panY() - curPoint.y + _this.lastPoint.y);
                 }
                 _this.lastPoint = curPoint;
+                evt.stopPropagation();
+                evt.preventDefault();
             }
         };
         _this.onMouseUpAndLeave = function (e) {
             _this.mouseDown = false;
             _this.lastPoint = undefined;
             facade_1.store.dispatch(facade_1.actionHandToolPanEnd());
+            if (e) {
+                var evt = e.e;
+                evt.stopPropagation();
+                evt.preventDefault();
+            }
         };
         return _this;
     }
@@ -95,7 +104,7 @@ var HandTool = /** @class */ (function (_super) {
                 renderer.on("mousedown", this.onMouseDown);
                 renderer.on("mousemove", this.onMouseMove);
                 renderer.on("mouseup", this.onMouseUpAndLeave);
-                renderer.on("mouseup", this.onMouseUpAndLeave);
+                renderer.on("mouseleave", this.onMouseUpAndLeave);
                 return [2 /*return*/];
             });
         });
@@ -108,7 +117,7 @@ var HandTool = /** @class */ (function (_super) {
                 renderer.off("mousedown", this.onMouseDown);
                 renderer.off("mousemove", this.onMouseMove);
                 renderer.off("mouseup", this.onMouseUpAndLeave);
-                renderer.off("mouseup", this.onMouseUpAndLeave);
+                renderer.off("mouseleave", this.onMouseUpAndLeave);
                 return [2 /*return*/];
             });
         });

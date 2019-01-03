@@ -45,7 +45,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var uxele_core_1 = require("uxele-core");
+// import { session } from "../../uxele-faced/build";
 var uxele_utils_1 = require("uxele-utils");
+var uxele_utils_2 = require("uxele-utils");
 var facade_1 = require("../../facade");
 var BaseTool_1 = require("../BaseTool");
 var ColorTool = /** @class */ (function (_super) {
@@ -55,13 +58,11 @@ var ColorTool = /** @class */ (function (_super) {
         _this.name = "tool_color_name";
         _this.slug = "tool_color";
         _this.cls = "fas fa-eye-dropper";
-        _this.colorGroup = new window.fabric.Group(undefined, {
-            selectable: false,
-            shadow: "0px 0px 20px rgba(0,0,0,0.4)"
-        });
+        _this.inited = false;
         _this.onMouseDown = function (e) {
             if (_this.hoverColor) {
                 facade_1.store.dispatch(facade_1.actionColorToolPick(_this.hoverColor));
+                facade_1.copyColor(_this.hoverColor);
             }
         };
         // private zoomImg(img: ImageData, zoom: number) {
@@ -94,18 +95,22 @@ var ColorTool = /** @class */ (function (_super) {
         //   return new ImageData(newData, nwidth, nheight);
         // }
         _this.onMouseMove = function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var curPage, times, img, canvas, magImg, coords, ctx, imageData;
+            var realCoords, curPage, img, canvas, magImg, coords, ctx, imageData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        curPage = facade_1.store.getState().chosePage.page;
-                        if (!(curPage && e)) return [3 /*break*/, 3];
+                        if (!e) return [3 /*break*/, 4];
+                        realCoords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e), false);
+                        curPage = this.renderer.pageByRealCoords(realCoords);
+                        if (!curPage) return [3 /*break*/, 3];
+                        if (this.curPageContext && this.curPageContext.page !== curPage) {
+                            this.curPageContext = undefined;
+                        }
                         if (!!this.curPageContext) return [3 /*break*/, 2];
-                        times = 5;
-                        return [4 /*yield*/, curPage.getPreview(1)];
+                        return [4 /*yield*/, curPage.getPreview()];
                     case 1:
                         img = _a.sent();
-                        canvas = uxele_utils_1.imgToCanvas(img);
+                        canvas = uxele_utils_2.imgToCanvas(img);
                         magImg = img;
                         this.curPageContext = {
                             page: curPage,
@@ -114,77 +119,112 @@ var ColorTool = /** @class */ (function (_super) {
                         };
                         _a.label = 2;
                     case 2:
-                        coords = this.renderer.rendererPointToRealPoint(this.renderer.mouseEventToCoords(e));
+                        coords = this.renderer.realPointToPagePoint(realCoords, curPage);
                         ctx = this.curPageContext.pageCanvas.getContext("2d");
                         imageData = ctx.getImageData(coords.x, coords.y, 1, 1);
-                        this.drawColor(imageData.data[0], imageData.data[1], imageData.data[2], coords);
+                        this.drawColor(imageData.data[0], imageData.data[1], imageData.data[2], coords, curPage);
                         this.hoverColor = "rgb(" + imageData.data[0] + ", " + imageData.data[1] + "," + imageData.data[2] + ")";
                         facade_1.store.dispatch(facade_1.actionColorToolHover(this.hoverColor));
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 3:
+                        this.hoverColor = undefined;
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         }); };
         return _this;
     }
-    ColorTool.prototype.drawColor = function (r, g, b, coords) {
+    ColorTool.prototype.drawColor = function (r, g, b, coords, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, radius, padding, outerPadding, zoomTime, fullImg, img, rect, circleBg, circleBgOut;
-            return __generator(this, function (_b) {
-                (_a = this.colorGroup).remove.apply(_a, this.colorGroup.getObjects());
-                radius = 80;
-                padding = 5;
-                outerPadding = 15;
-                zoomTime = 5;
-                fullImg = this.curPageContext.magImg;
-                img = new window.fabric.Image(fullImg, {
-                    originX: "left",
-                    originY: "top",
-                    left: -coords.x * zoomTime,
-                    top: -coords.y * zoomTime,
-                    scaleX: zoomTime,
-                    scaleY: zoomTime,
-                    clipTo: function (ctx) {
-                        // ctx.arc((coords.x-fullImg.naturalWidth/2), (coords.y-fullImg.naturalHeight/2), radius, 0, Math.PI * 2, true);
-                        ctx.arc((coords.x - fullImg.naturalWidth / 2), (coords.y - fullImg.naturalHeight / 2), radius / zoomTime, 0, Math.PI * 2, true);
-                    }
-                });
-                rect = new window.fabric.Rect({
-                    originX: "center",
-                    originY: "center",
-                    strokeWidth: 1,
-                    stroke: "black",
-                    fill: "transparent",
-                    width: 10,
-                    height: 10,
-                    left: 0,
-                    top: 0,
-                });
-                circleBg = new window.fabric.Circle({
-                    originX: "center",
-                    originY: "center",
-                    left: 0,
-                    top: 0,
-                    radius: radius + padding,
-                    fill: "#d1d1d1"
-                });
-                circleBgOut = new window.fabric.Circle({
-                    originX: "left",
-                    originY: "top",
-                    left: coords.x * this.renderer.zoom(),
-                    top: coords.y * this.renderer.zoom(),
-                    radius: radius + padding + outerPadding,
-                    fill: "rgb(" + r + "," + g + "," + b + ")",
-                    clipTo: function (ctx) {
-                        ctx.arc(0, 0, radius + padding + outerPadding, 1 / 2 * Math.PI, -1 / 2 * Math.PI, true);
-                    }
-                });
-                this.colorGroup.addWithUpdate(circleBgOut);
-                this.colorGroup.add(circleBg);
-                this.colorGroup.add(img);
-                this.colorGroup.add(rect);
-                this.renderer.draw(this.colorGroup);
-                return [2 /*return*/];
+            var magRadius, colorBandSize, roundEdgeSize, shift, magShift, roundEdgeShift, colorBandRadius, roundEdgeRadius, padding, outerPadding, zoomTime, fullImg, cropped, realCoords, coordLeft, coordTop, clip;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        magRadius = 120;
+                        colorBandSize = 20;
+                        roundEdgeSize = 3;
+                        shift = 0;
+                        magShift = shift + colorBandSize + roundEdgeSize;
+                        roundEdgeShift = shift + colorBandSize;
+                        colorBandRadius = magRadius + roundEdgeSize + colorBandSize;
+                        roundEdgeRadius = magRadius + roundEdgeSize;
+                        padding = 5;
+                        outerPadding = 15;
+                        zoomTime = 8;
+                        fullImg = this.curPageContext.magImg;
+                        return [4 /*yield*/, uxele_utils_2.canvasToImg(uxele_utils_1.scaleCanvas(uxele_utils_1.cropCanvas(this.curPageContext.pageCanvas, new uxele_core_1.Rect(Math.ceil(coords.x - magRadius / zoomTime), Math.ceil(coords.y - magRadius / zoomTime), Math.ceil(coords.x + magRadius / zoomTime), Math.ceil(coords.y + magRadius / zoomTime))), zoomTime, false))];
+                    case 1:
+                        cropped = _a.sent();
+                        realCoords = this.renderer.pagePointToRealPoint(coords, page);
+                        coordLeft = realCoords.x * this.renderer.zoom();
+                        coordTop = realCoords.y * this.renderer.zoom();
+                        clip = {
+                            circle: {
+                                radius: magRadius,
+                                left: coordLeft + magShift,
+                                top: coordTop + magShift,
+                            }
+                        };
+                        if (!this.inited) {
+                            this.colorBand = this.renderer.draw({
+                                radius: colorBandRadius,
+                                left: coordLeft + shift,
+                                top: coordTop + shift,
+                                fillColor: "rgb(" + r + "," + g + "," + b + ")"
+                            }, this.colorGroup);
+                            this.roundEdge = this.renderer.draw({
+                                radius: roundEdgeRadius,
+                                left: coordLeft + roundEdgeShift,
+                                top: coordTop + roundEdgeShift,
+                                fillColor: "#d1d1d1"
+                            }, this.colorGroup);
+                            this.magImg = this.renderer.draw({
+                                img: cropped,
+                                left: coordLeft + magShift,
+                                top: coordTop + magShift,
+                                clip: clip
+                            }, this.colorGroup);
+                            this.magCursor = this.renderer.draw({
+                                left: coordLeft + magShift + magRadius - zoomTime,
+                                top: coordTop + magShift + magRadius - zoomTime,
+                                width: zoomTime * 2,
+                                height: zoomTime * 2,
+                                strokeWidth: 1,
+                                fillColor: "transparent"
+                            }, this.colorGroup);
+                            this.inited = true;
+                        }
+                        else {
+                            this.renderer.updateDraw(this.colorBand, {
+                                radius: colorBandRadius,
+                                left: coordLeft + shift,
+                                top: coordTop + shift,
+                                fillColor: "rgb(" + r + "," + g + "," + b + ")"
+                            });
+                            this.renderer.updateDraw(this.roundEdge, {
+                                radius: roundEdgeRadius,
+                                left: coordLeft + roundEdgeShift,
+                                top: coordTop + roundEdgeShift,
+                                fillColor: "#d1d1d1"
+                            });
+                            this.renderer.updateDraw(this.magImg, {
+                                img: cropped,
+                                left: coordLeft + magShift,
+                                top: coordTop + magShift,
+                                clip: clip
+                            });
+                            this.renderer.updateDraw(this.magCursor, {
+                                left: coordLeft + magShift + magRadius - zoomTime,
+                                top: coordTop + magShift + magRadius - zoomTime,
+                                width: zoomTime * 2,
+                                height: zoomTime * 2,
+                                strokeWidth: 1,
+                                fillColor: "transparent"
+                            });
+                        }
+                        return [2 /*return*/];
+                }
             });
         });
     };
@@ -198,6 +238,7 @@ var ColorTool = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 renderer = this.renderer;
                 // renderer.on("mousedown", this.onMouseDown);
+                this.colorGroup = renderer.getDrawableGroup();
                 renderer.on("mousemove", this.onMouseMove);
                 renderer.on("click", this.onMouseDown);
                 return [2 /*return*/];
@@ -211,7 +252,7 @@ var ColorTool = /** @class */ (function (_super) {
                 renderer = this.renderer;
                 renderer.off("click", this.onMouseDown);
                 renderer.off("mousemove", this.onMouseMove);
-                renderer.clearDrawing(this.colorGroup);
+                renderer.removeDrawableGroup(this.colorGroup);
                 this.curPageContext = undefined;
                 return [2 /*return*/];
             });

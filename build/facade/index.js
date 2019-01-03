@@ -10,4 +10,6 @@ __export(require("./states"));
 __export(require("./bindCanvas"));
 __export(require("./canvasControl"));
 __export(require("./exporters"));
+__export(require("./colorPicker"));
+__export(require("./general"));
 //# sourceMappingURL=/Users/kxiang/work/projects/psdetch/v3-new/uxele-facade/src/facade/index.js.map

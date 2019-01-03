@@ -17,6 +17,8 @@ export class HandTool extends BaseTool{
         y: evt.clientY
       }
       store.dispatch(actionHandToolPanStart());
+      evt.stopPropagation();
+      evt.preventDefault();
       // this.emit("onPanStart");
     }
   }
@@ -30,12 +32,19 @@ export class HandTool extends BaseTool{
         renderer.panY(renderer.panY() - curPoint.y + this.lastPoint.y)
       }
       this.lastPoint = curPoint;
+      evt.stopPropagation();
+      evt.preventDefault();
     }
   }
   onMouseUpAndLeave = (e: IRendererEvent | undefined) => {
     this.mouseDown = false;
     this.lastPoint = undefined;
     store.dispatch(actionHandToolPanEnd());
+    if (e){
+      const evt=e.e as MouseEvent;
+      evt.stopPropagation();
+      evt.preventDefault();
+    }
   }
   protected async bindRenderer(): Promise<void> {
     const renderer = this.renderer!;
@@ -43,14 +52,14 @@ export class HandTool extends BaseTool{
     renderer.on("mousemove", this.onMouseMove);
 
     renderer.on("mouseup",this.onMouseUpAndLeave);
-    renderer.on("mouseup", this.onMouseUpAndLeave);
+    renderer.on("mouseleave", this.onMouseUpAndLeave);
   }
   protected async unbindRenderer(): Promise<void> {
     const renderer = this.renderer;
     renderer.off("mousedown", this.onMouseDown);
     renderer.off("mousemove", this.onMouseMove);
     renderer.off("mouseup",this.onMouseUpAndLeave);
-    renderer.off("mouseup", this.onMouseUpAndLeave);
+    renderer.off("mouseleave", this.onMouseUpAndLeave);
   }
 
 
